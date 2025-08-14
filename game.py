@@ -14,9 +14,16 @@ def run_game() :
     running = True
     while running :
         for event in pygame.event.get():
+            # Detection de clic sur la croix pour fermer l'app
             if (event.type == pygame.QUIT):
                 running = False
+            # Detection d'une touche pressé
+            elif (event.type == pygame.KEYDOWN):
+                # Detection de la touche espace
+                if event.key == pygame.K_SPACE:
+                    player.jump()
         screen.fill(GREEN_COLOR)
+        player.apply_gravity()
         player.draw(screen)
         pygame.display.flip()
         clock.tick(FPS)
