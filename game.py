@@ -2,7 +2,7 @@
 
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, BLACK_COLOR, RED_COLOR, GREEN_COLOR
-from entities import Player, Obstacle
+from entities import Player, Obstacle, Score
 from utils import draw_game_over_screen
 
 def run_game() :
@@ -14,6 +14,7 @@ def run_game() :
 
     player = Player()
     obstacle = Obstacle()
+    score = Score()
     
     running = True
     game_over = False
@@ -27,17 +28,21 @@ def run_game() :
             elif (event.type == pygame.KEYDOWN and not game_over):
                 # Detection de la touche espace
                 if event.key == pygame.K_SPACE:
-                    player.jump()
+                    player.jump()      
             elif (event.type == pygame.KEYDOWN and game_over):
+                # Detection de la touche R pour relancer une partie en cas de game over
                 if event.key == pygame.K_r:
                     game_over = False
+                    
                     obstacle.reset()
                     player.reset()
+                    score.reset()
 
         if not game_over : 
             # update des positions
             obstacle.update()
             player.apply_gravity()
+            score.update()
             # test de collision entre joueur et obstacle
             if player.rect.colliderect(obstacle.rect):
                 game_over = True
@@ -46,10 +51,11 @@ def run_game() :
         screen.fill(GREEN_COLOR)
         obstacle.draw(screen)
         player.draw(screen)
+        score.draw(screen)
 
         if game_over :
+            score.update_best() # maj du meilleur score retenu
             draw_game_over_screen(screen)
-            
 
         pygame.display.flip() # maj affichage
         clock.tick(FPS)

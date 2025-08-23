@@ -1,7 +1,7 @@
 ### Fichier contenant les classes de l'application ###
 
 import pygame
-from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y
+from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y, BLACK_COLOR
 
 class Player:
     def __init__(self, width=10, height=20, color=RED_COLOR):
@@ -69,3 +69,42 @@ class Obstacle:
         # Reset de la position
         self.rect.x = SCREEN_WIDTH
         self.rect.y = GROUND_Y - self.height
+
+class Score:
+    def __init__(self, score=0):
+        self.score = score
+        self.best = 0
+        self.last_update_time = 0
+        # score
+        self.score_font = pygame.font.Font(None, 30)  
+        self.score_text = self.score_font.render("Score : " + str(self.score), True, BLACK_COLOR) 
+        self.score_text_rect = self.score_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//9))
+        # meilleur score
+        self.best_font = pygame.font.Font(None, 20) 
+        self.best_text = self.best_font.render("Best : " + str(self.best), True, BLACK_COLOR) 
+        self.best_text_rect = self.best_text.get_rect(center=(SCREEN_WIDTH-SCREEN_WIDTH//8, SCREEN_HEIGHT-SCREEN_HEIGHT//11))
+
+    def draw(self, surface):
+        # Affichage score actuel
+        self.score_text = self.score_font.render("Score : " + str(self.score), True, BLACK_COLOR) 
+        surface.blit(self.score_text, self.score_text_rect)
+        # Affichage meilleur score
+        self.best_text = self.best_font.render("Best : " + str(self.best), True, BLACK_COLOR) 
+        surface.blit(self.best_text, self.best_text_rect)
+
+    def update(self):
+        current_time = pygame.time.get_ticks()
+        if self.last_update_time+100 < current_time :
+            self.score += 1
+            self.last_update_time = current_time
+
+    def add(self, bonus):
+        self.score += bonus
+
+    def reset(self):
+        self.score = 0
+        self.last_update_time = pygame.time.get_ticks()
+
+    def update_best(self):
+        if self.score > self.best :
+            self.best = self.score
