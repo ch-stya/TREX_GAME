@@ -4,7 +4,7 @@ import pygame
 from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y, BLACK_COLOR
 
 class Player:
-    def __init__(self, width=10, height=20, color=RED_COLOR):
+    def __init__(self, width=40, height=50, color=RED_COLOR):
         self.width = width
         self.height = height
         self.color = color
@@ -16,9 +16,25 @@ class Player:
             self.height) # height
         self.gravity = 0
         self.jump_strength = -17
+        self.current_frame = 0
+
+        # Animation run player
+        spritesheet = pygame.image.load("assets/catgray/64x64/2d/run.png").convert_alpha()
+        frame_width = spritesheet.get_width() // 7
+        frame_height = spritesheet.get_height()
+        self.frames = []
+        for i in range(7):
+            rect = pygame.Rect(i * frame_width, 0, frame_width, frame_height)
+            frame_image = spritesheet.subsurface(rect)
+            self.frames.append(frame_image)
         
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        #pygame.draw.rect(surface, self.color, self.rect)
+        if self.current_frame < len(self.frames)-1:
+            self.current_frame +=0.3
+        else :
+            self.current_frame = 0
+        surface.blit(self.frames[int(self.current_frame)], self.rect)
 
     def jump(self):
         # Saut seulement si le joueur est au sol

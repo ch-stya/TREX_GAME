@@ -11,7 +11,6 @@ def run_game() :
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     
-
     player = Player()
     obstacle = Obstacle()
     score = Score()
