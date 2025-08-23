@@ -13,3 +13,21 @@ def draw_game_over_screen(surface):
     surface.blit(game_over_text, game_over_text_rect)
     surface.blit(replay_text, replay_text_rect)
     return None
+
+def draw_start_screen(surface):
+    start_font = pygame.font.Font(None, 50)
+    start_text = start_font.render("Press 'Space' to start", True, BLACK_COLOR)
+    start_text_rect = start_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+    surface.blit(start_text, start_text_rect)
+    return None
+
+def convert_spritesheet(path, total_images):
+    spritesheet = pygame.image.load(path).convert_alpha()
+    frame_width = spritesheet.get_width() // total_images
+    frame_height = spritesheet.get_height()
+    frames = []
+    for i in range(total_images):
+        rect = pygame.Rect(i * frame_width, 0, frame_width, frame_height)
+        frame_image = spritesheet.subsurface(rect)
+        frames.append(frame_image)
+    return frames, frame_height, frame_width*0.66
