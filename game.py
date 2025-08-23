@@ -1,17 +1,16 @@
 ### Definition des éléments nécessaire et fonctionnement du jeu ###
 
 import pygame
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, BLUE_COLOR, RED_COLOR, GREEN_COLOR
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, BLACK_COLOR, RED_COLOR, GREEN_COLOR
 from entities import Player, Obstacle
+from utils import draw_game_over_screen
 
 def run_game() :
     pygame.init()
     pygame.display.set_caption(GAME_TITLE)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
-    font = pygame.font.Font(None, 74)  # None = police par défaut, 74 = taille
-    game_over_text = font.render("GAME OVER", True, RED_COLOR)  # texte rouge
-    game_over_text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+    
 
     player = Player()
     obstacle = Obstacle()
@@ -29,6 +28,11 @@ def run_game() :
                 # Detection de la touche espace
                 if event.key == pygame.K_SPACE:
                     player.jump()
+            elif (event.type == pygame.KEYDOWN and game_over):
+                if event.key == pygame.K_r:
+                    game_over = False
+                    obstacle.reset()
+                    player.reset()
 
         if not game_over : 
             # update des positions
@@ -44,7 +48,8 @@ def run_game() :
         player.draw(screen)
 
         if game_over :
-            screen.blit(game_over_text, game_over_text_rect)
+            draw_game_over_screen(screen)
+            
 
         pygame.display.flip() # maj affichage
         clock.tick(FPS)

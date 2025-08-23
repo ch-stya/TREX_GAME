@@ -11,13 +11,12 @@ class Player:
         # Création du rectangle à la bonne position
         self.rect = pygame.Rect(
             (SCREEN_WIDTH - self.width) // 5, # x, un peu sur la gauche
-            GROUND_Y - height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
+            GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
             self.width, # width
             self.height) # height
         self.gravity = 0
         self.jump_strength = -17
         
-
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
 
@@ -37,6 +36,12 @@ class Player:
             self.rect.bottom = GROUND_Y
             self.gravity = 0
 
+    def reset(self):
+        # Reset de la position
+        self.rect.x = (SCREEN_WIDTH - self.width) // 5
+        self.rect.y = GROUND_Y - self.height
+        self.gravity = 0
+
 class Obstacle:
     def __init__(self, width=30, height=30, color=BLUE_COLOR, speed=5):
         self.width = width # largeur
@@ -45,8 +50,8 @@ class Obstacle:
         self.speed = speed # vitesse
         # Création du rectangle à la bonne position (x fixe, y ajusté via bottom)
         self.rect = pygame.Rect(
-            (SCREEN_WIDTH), # x, tout à droite légérement en dehors de la fenêtre
-            GROUND_Y - height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
+            SCREEN_WIDTH, # x, tout à droite légérement en dehors de la fenêtre
+            GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
             self.width, # width
             self.height) # height
 
@@ -59,3 +64,8 @@ class Obstacle:
             self.rect.x = SCREEN_WIDTH 
         else :
             self.rect.x -= self.speed
+            
+    def reset(self):
+        # Reset de la position
+        self.rect.x = SCREEN_WIDTH
+        self.rect.y = GROUND_Y - self.height
