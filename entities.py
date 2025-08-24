@@ -44,6 +44,7 @@ class Player:
         if self.state != state :
             self.current_frame = 0
         self.state=state
+        bottom = self.rect.bottom # garder le bas du joueur constant
         if self.state == "run" :
             self.rect.height = self.run_height
             self.rect.width = self.run_width
@@ -68,6 +69,7 @@ class Player:
             self.frames = self.jump_down_frames
             self.frame_speed = 0.3
             self.hitbox = self.rect.inflate(-self.jump_down_width//2, 0)
+        self.rect.bottom = bottom # repositionner le bas à sa position d'origine
         self.update_hitbox()
 
     def update_hitbox(self):
@@ -81,7 +83,6 @@ class Player:
         # rect.bottom regarde les coordonnées sur le bas du rectangle plutôt qu'en haut à gauche avec rect
         if self.rect.bottom == GROUND_Y :
             self.gravity = self.jump_strength
-            #self.set_state("jump_up")
 
     def apply_gravity(self):
         # Appliquer la gravité 
