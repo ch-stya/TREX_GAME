@@ -30,7 +30,6 @@ def run_game() :
             elif (event.type == pygame.KEYDOWN and not game_over and start):
                 # Detection de la touche espace
                 if event.key == pygame.K_SPACE:
-                    player.set_state("run")
                     player.jump()      
             elif (event.type == pygame.KEYDOWN and game_over and start):
                 # Detection de la touche R pour relancer une partie en cas de game over
@@ -43,15 +42,15 @@ def run_game() :
             elif (event.type == pygame.KEYDOWN and not start and not game_over):
                 if event.key == pygame.K_SPACE:
                     start = True
+                    player.set_state("run")
         
         if not game_over and start : 
-            player.set_state("run")
             # update des positions
             obstacle.update()
             player.apply_gravity()
             score.update()
-            # test de collision entre joueur et obstacle
-            if player.rect.colliderect(obstacle.rect):
+            # test de collision entre hitbox joueur et obstacle
+            if player.hitbox.colliderect(obstacle.rect):
                 game_over = True
 
         # draw
@@ -59,6 +58,7 @@ def run_game() :
         obstacle.draw(screen)
         player.draw(screen)
         score.draw(screen)
+        #player.draw_hitbox(screen)
 
         if game_over :
             player.reset()

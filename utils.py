@@ -21,13 +21,15 @@ def draw_start_screen(surface):
     surface.blit(start_text, start_text_rect)
     return None
 
-def convert_spritesheet(path, total_images):
+def convert_spritesheet(path, total_images, start=0, end=None):
     spritesheet = pygame.image.load(path).convert_alpha()
     frame_width = spritesheet.get_width() // total_images
     frame_height = spritesheet.get_height()
     frames = []
-    for i in range(total_images):
+    if end is None : # si end pas précisé on prends le total images
+        end = total_images
+    for i in range(start, end):
         rect = pygame.Rect(i * frame_width, 0, frame_width, frame_height)
         frame_image = spritesheet.subsurface(rect)
         frames.append(frame_image)
-    return frames, frame_height, frame_width*0.66
+    return frames, frame_height, frame_width
