@@ -5,3 +5,4 @@
 ###### Credits
 
 - Cat asset pack : Krystsina Staselovich (https://opengameart.org/content/gray-cat-asset-pack)
+- Cat objects : Peony (https://opengameart.org/content/cats-pixel-art)

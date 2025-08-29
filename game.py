@@ -3,7 +3,7 @@
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, GREEN_COLOR
 from entities import Player, Obstacle, Score
-from utils import draw_game_over_screen, draw_start_screen
+from utils import draw_game_over_screen, draw_start_screen, convert_img
 
 def run_game() :
     pygame.init()
@@ -12,6 +12,8 @@ def run_game() :
     clock = pygame.time.Clock()
     icon = pygame.image.load("assets/catgray/32x32/icone.png").convert_alpha()
     pygame.display.set_icon(icon)
+
+    #convert_img("assets/objects/pink_yarn.png", (32,32))
     
     player = Player()
     obstacle = Obstacle()

@@ -1,6 +1,7 @@
 ### Fichier contenant les fonctions de l'application ###
 
 import pygame
+from PIL import Image
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, RED_COLOR, BLACK_COLOR
 
 def draw_game_over_screen(surface):
@@ -33,3 +34,19 @@ def convert_spritesheet(path, total_images, start=0, end=None):
         frame_image = spritesheet.subsurface(rect)
         frames.append(frame_image)
     return frames, frame_height, frame_width
+
+def convert_img(chemin, res) :
+    """
+    Fonction servant à convertir une image avec  Pillow.
+    Ecrire "from PIL import Image" en début de programme pour l'utiliser.
+    Entrées : Chemin de l'image (str), nouvelle résolution souhaitée (tuple)
+    -> Convertit l'image et la place dans le même dossier, avec  taille de l'image dans le nom.
+    -> Exemple d'utilisation : convert_img("assets/images/saotome_pretty.png", (240, 320))
+    """
+    # Conversion d'une image avec Pillow (à ne faire qu'une fois)
+    image = Image.open(chemin)
+    # Redimensionnement de l'image
+    nouvelle_image = image.resize(res)
+    chemin = chemin[:-4]
+    # Enregistrement de la nouvelle image
+    nouvelle_image.save(chemin + "(" + str(res[0]) + "x" + str(res[1]) + ").png")

@@ -111,10 +111,10 @@ class Player:
         self.gravity = 0
 
 class Obstacle:
-    def __init__(self, width=30, height=30, color=BLUE_COLOR, speed=5):
+    def __init__(self, width=30, height=30, type='yarn', speed=5):
         self.width = width # largeur
         self.height = height # hauteur
-        self.color = color # couleur
+        self.type = type # type d'objet
         self.speed = speed # vitesse
         # Création du rectangle à la bonne position (x fixe, y ajusté via bottom)
         self.rect = pygame.Rect(
@@ -122,9 +122,13 @@ class Obstacle:
             GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
             self.width, # width
             self.height) # height
+        if self.type == 'yarn' :
+            self.img = pygame.image.load("assets/objects/pink_yarn(32x32).png").convert_alpha()
+    
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        #pygame.draw.rect(surface, BLUE_COLOR, self.rect)
+        surface.blit(self.img, self.rect)
 
     def update(self):
         # Déplacement de l'obstacle vers la gauche
