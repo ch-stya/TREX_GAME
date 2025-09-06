@@ -101,7 +101,6 @@ class Player:
             elif self.gravity > 1 :
                 self.set_state("jump_down")
         
-
     def reset(self):
         # Reset de la position
         self.rect.height = self.idle_height
@@ -111,10 +110,9 @@ class Player:
         self.gravity = 0
 
 class Obstacle:
-    def __init__(self, width=30, height=30, type='yarn', speed=5):
+    def __init__(self, width=60, height=60, speed=5):
         self.width = width # largeur
         self.height = height # hauteur
-        self.type = type # type d'objet
         self.speed = speed # vitesse
         # Création du rectangle à la bonne position (x fixe, y ajusté via bottom)
         self.rect = pygame.Rect(
@@ -122,13 +120,11 @@ class Obstacle:
             GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
             self.width, # width
             self.height) # height
-        if self.type == 'yarn' :
-            self.img = pygame.image.load("assets/objects/pink_yarn(32x32).png").convert_alpha()
+        self.hitbox = self.rect.inflate(-self.width//2, 0)
     
-
     def draw(self, surface):
-        #pygame.draw.rect(surface, BLUE_COLOR, self.rect)
-        surface.blit(self.img, self.rect)
+        self.update_hitbox()
+        pygame.draw.rect(surface, BLUE_COLOR, self.rect)
 
     def update(self):
         # Déplacement de l'obstacle vers la gauche
@@ -141,6 +137,29 @@ class Obstacle:
         # Reset de la position
         self.rect.x = SCREEN_WIDTH
         self.rect.y = GROUND_Y - self.height
+
+    def update_hitbox(self):
+        self.hitbox.center = self.rect.center
+
+    def draw_hitbox(self, surface):
+        pygame.draw.rect(surface, (255, 0, 0), self.hitbox, 2)
+
+class Yarn(Obstacle):
+    def __init__(self, speed=5):
+        self.img = pygame.image.load("assets/objects/pink_yarn(32x32).png").convert_alpha()
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.speed = speed # vitesse
+        self.rect = pygame.Rect(
+            SCREEN_WIDTH, # x, tout à droite légérement en dehors de la fenêtre
+            GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
+            self.width, # width
+            self.height) # height
+        self.hitbox = self.rect.inflate(-self.width//2, 0)
+
+    def draw(self, surface):
+        self.update_hitbox()
+        surface.blit(self.img, self.rect)
 
 class Score:
     def __init__(self, score=0):

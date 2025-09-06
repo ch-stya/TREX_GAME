@@ -2,7 +2,7 @@
 
 import pygame
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, GREEN_COLOR
-from entities import Player, Obstacle, Score
+from entities import Player, Obstacle, Score, Yarn
 from utils import draw_game_over_screen, draw_start_screen, convert_img
 
 def run_game() :
@@ -16,7 +16,7 @@ def run_game() :
     #convert_img("assets/objects/pink_yarn.png", (32,32))
     
     player = Player()
-    obstacle = Obstacle()
+    obstacle = Yarn()
     score = Score()
     
     running = True
@@ -52,7 +52,7 @@ def run_game() :
             player.apply_gravity()
             score.update()
             # test de collision entre hitbox joueur et obstacle
-            if player.hitbox.colliderect(obstacle.rect):
+            if player.hitbox.colliderect(obstacle.hitbox):
                 game_over = True
 
         # draw
@@ -60,6 +60,7 @@ def run_game() :
         obstacle.draw(screen)
         player.draw(screen)
         score.draw(screen)
+        #obstacle.draw_hitbox(screen)
         #player.draw_hitbox(screen)
 
         if game_over :
