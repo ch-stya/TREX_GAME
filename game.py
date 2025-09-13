@@ -15,7 +15,7 @@ def run_game() :
 
     #convert_img("assets/objects/pink_yarn.png", (32,32))
     
-    player = Player()
+    player = Player("brown")
     obstacle = Yarn()
     score = Score()
     

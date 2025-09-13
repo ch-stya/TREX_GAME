@@ -50,3 +50,15 @@ def convert_img(chemin, res) :
     chemin = chemin[:-4]
     # Enregistrement de la nouvelle image
     nouvelle_image.save(chemin + "(" + str(res[0]) + "x" + str(res[1]) + ").png")
+
+def scale_frames(frames, factor):
+    """
+    Permet d'appliquer une mise à l'échelle à une sélection d'images.
+    """
+    scaled = []
+    for frame in frames:
+        width = int(frame.get_width() * factor)
+        height = int(frame.get_height() * factor)
+        scaled_frame = pygame.transform.scale(frame, (width, height))
+        scaled.append(scaled_frame)
+    return scaled

@@ -1,19 +1,34 @@
 ### Fichier contenant les classes de l'application ###
 
 import pygame
-from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y, BLACK_COLOR
-from utils import convert_spritesheet
+from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y, BLACK_COLOR, SKINS
+from utils import convert_spritesheet, scale_frames
 
 class Player:
-    def __init__(self):
+    def __init__(self, skin):
+        self.skin = skin
+        scale_factor = 2
+        self.hitbox_factor = 1.6 # facteur de réduction de la hitbox par rapport à la frame originale
         # Animation run player
-        self.run_frames, self.run_height, self.run_width = convert_spritesheet("assets/catgray/64x64/2d/run.png", 7)
+        self.run_frames, self.run_height, self.run_width = convert_spritesheet(SKINS[self.skin]["run"], 7)
+        self.run_frames = scale_frames(self.run_frames, scale_factor)
+        self.run_height = int(self.run_height * scale_factor)
+        self.run_width = int(self.run_width * scale_factor)
         # Animation idle player
-        self.idle_frames, self.idle_height, self.idle_width = convert_spritesheet("assets/catgray/64x64/2d/idle.png", 7)
+        self.idle_frames, self.idle_height, self.idle_width = convert_spritesheet(SKINS[self.skin]["idle"], 7)
+        self.idle_frames = scale_frames(self.idle_frames, scale_factor)
+        self.idle_height = int(self.idle_height * scale_factor)
+        self.idle_width = int(self.idle_width * scale_factor)
         # Animation jump up player
-        self.jump_up_frames, self.jump_up_height, self.jump_up_width = convert_spritesheet("assets/catgray/64x64/2d/jump.png", 7, 0, 3)
+        self.jump_up_frames, self.jump_up_height, self.jump_up_width = convert_spritesheet(SKINS[self.skin]["jump"], 7, 0, 3)
+        self.jump_up_frames = scale_frames(self.jump_up_frames, scale_factor)
+        self.jump_up_height = int(self.jump_up_height * scale_factor)
+        self.jump_up_width = int(self.jump_up_width * scale_factor)
         # Animation jump down player
-        self.jump_down_frames, self.jump_down_height, self.jump_down_width = convert_spritesheet("assets/catgray/64x64/2d/jump.png", 7, 3, 6)
+        self.jump_down_frames, self.jump_down_height, self.jump_down_width = convert_spritesheet(SKINS[self.skin]["jump"], 7, 3, 6)
+        self.jump_down_frames = scale_frames(self.jump_down_frames, scale_factor)
+        self.jump_down_height = int(self.jump_down_height * scale_factor)
+        self.jump_down_width = int(self.jump_down_width * scale_factor)
 
         # Création du rectangle à la bonne position
         self.rect = pygame.Rect(
@@ -28,7 +43,9 @@ class Player:
         self.current_frame = 0
         self.state = "idle"
         self.frame_speed = 0.1 # Vitesse entre les frames de l'animation
-        self.hitbox = self.rect.inflate(-self.idle_width//2, 0)
+        self.hitbox = self.rect.inflate(-self.idle_width//self.hitbox_factor, 0)
+
+        print(self.run_width, self.idle_width)
         
     def draw(self, surface):
         #pygame.draw.rect(surface, RED_COLOR, self.rect)
@@ -50,25 +67,25 @@ class Player:
             self.rect.width = self.run_width
             self.frames = self.run_frames
             self.frame_speed = 0.3
-            self.hitbox = self.rect.inflate(-self.run_width//2, 0)
+            self.hitbox = self.rect.inflate(-self.run_width//self.hitbox_factor, 0)
         elif self.state == "idle" :
             self.rect.height = self.idle_height
             self.rect.width = self.idle_width
             self.frames = self.idle_frames
             self.frame_speed = 0.1
-            self.hitbox = self.rect.inflate(-self.idle_width//2, 0)
+            self.hitbox = self.rect.inflate(-self.idle_width//self.hitbox_factor, 0)
         elif self.state == "jump_up" : # vers le haut
             self.rect.height = self.jump_up_height
             self.rect.width = self.jump_up_width
             self.frames = self.jump_up_frames
             self.frame_speed = 0.2
-            self.hitbox = self.rect.inflate(-self.jump_up_width//2, 0)
+            self.hitbox = self.rect.inflate(-self.jump_up_width//self.hitbox_factor, 0)
         elif self.state == "jump_down" : # vers le bas
             self.rect.height = self.jump_down_height
             self.rect.width = self.jump_down_width
             self.frames = self.jump_down_frames
             self.frame_speed = 0.3
-            self.hitbox = self.rect.inflate(-self.jump_down_width//2, 0)
+            self.hitbox = self.rect.inflate(-self.jump_down_width//self.hitbox_factor, 0)
         self.rect.bottom = bottom # repositionner le bas à sa position d'origine
         self.update_hitbox()
 
