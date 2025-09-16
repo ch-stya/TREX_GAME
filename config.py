@@ -21,5 +21,10 @@ SKINS = {
         "run": "assets/skins/brown_cat/run.png",
         "idle": "assets/skins/brown_cat/idle.png",
         "jump": "assets/skins/brown_cat/jump.png"
+    },
+    "white":{
+        "run": "assets/skins/white_cat/run.png",
+        "idle": "assets/skins/white_cat/idle.png",
+        "jump": "assets/skins/white_cat/jump.png"
     }
 }
