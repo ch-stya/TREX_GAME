@@ -138,6 +138,7 @@ class Obstacle:
             self.width, # width
             self.height) # height
         self.hitbox = self.rect.inflate(-self.width//2, 0)
+        self.on_screen = False
     
     def draw(self, surface):
         self.update_hitbox()
@@ -145,15 +146,24 @@ class Obstacle:
 
     def update(self):
         # Déplacement de l'obstacle vers la gauche
-        if self.rect.right < 0 :
-            self.rect.x = SCREEN_WIDTH 
+        self.rect.x -= self.speed
+        self.current_pos()
+        #if self.rect.right < 0 :
+        #    self.rect.x = SCREEN_WIDTH 
+        #else :
+        #    self.rect.x -= self.speed
+
+    def current_pos(self):
+        if self.rect.x < -self.width  or self.rect.x > SCREEN_WIDTH :
+            self.on_screen = False
         else :
-            self.rect.x -= self.speed
+            self.on_screen = True
             
     def reset(self):
         # Reset de la position
         self.rect.x = SCREEN_WIDTH
         self.rect.y = GROUND_Y - self.height
+
 
     def update_hitbox(self):
         self.hitbox.center = self.rect.center
@@ -173,6 +183,40 @@ class Yarn(Obstacle):
             self.width, # width
             self.height) # height
         self.hitbox = self.rect.inflate(-self.width//2, 0)
+
+    def draw(self, surface):
+        self.update_hitbox()
+        surface.blit(self.img, self.rect)
+
+class Box_Small(Obstacle):
+    def __init__(self, speed=5):
+        self.img = pygame.image.load("assets/objects/box(32x32).png").convert_alpha()
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.speed = speed # vitesse
+        self.rect = pygame.Rect(
+            SCREEN_WIDTH, # x, tout à droite légérement en dehors de la fenêtre
+            GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
+            self.width, # width
+            self.height) # height
+        self.hitbox = self.rect.inflate(-self.width//2.5, 0)
+
+    def draw(self, surface):
+        self.update_hitbox()
+        surface.blit(self.img, self.rect)
+
+class Box_Big(Obstacle):
+    def __init__(self, speed=5):
+        self.img = pygame.image.load("assets/objects/box(64x64).png").convert_alpha()
+        self.width = self.img.get_width()
+        self.height = self.img.get_height()
+        self.speed = speed # vitesse
+        self.rect = pygame.Rect(
+            SCREEN_WIDTH, # x, tout à droite légérement en dehors de la fenêtre
+            GROUND_Y - self.height, # y, sur le sol et en déduisant la taille de l'objet car coord x,y se trouvent en haut à gauche
+            self.width, # width
+            self.height) # height
+        self.hitbox = self.rect.inflate(-self.width//2.5, 0)
 
     def draw(self, surface):
         self.update_hitbox()

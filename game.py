@@ -1,8 +1,9 @@
 ### Definition des éléments nécessaire et fonctionnement du jeu ###
 
 import pygame
+import random
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE, FPS, GREEN_COLOR
-from entities import Player, Obstacle, Score, Yarn
+from entities import Player, Obstacle, Score, Yarn, Box_Big, Box_Small
 from utils import draw_game_over_screen, draw_start_screen, convert_img
 
 def run_game() :
@@ -13,10 +14,11 @@ def run_game() :
     icon = pygame.image.load("assets/catgray/32x32/icone.png").convert_alpha()
     pygame.display.set_icon(icon)
 
-    #convert_img("assets/objects/pink_yarn.png", (32,32))
+    #convert_img("assets/objects/box(32x32).png", (64,64))
     
-    player = Player("white")
-    obstacle = Yarn()
+    obstacles_classes = [Yarn, Box_Big, Box_Small]
+    player = Player("grey")
+    obstacle = random.choice(obstacles_classes)()
     score = Score()
     
     running = True
@@ -54,14 +56,18 @@ def run_game() :
             # test de collision entre hitbox joueur et obstacle
             if player.hitbox.colliderect(obstacle.hitbox):
                 game_over = True
+            # création aléatoire d'un obstacle
+            if obstacle.on_screen is False :
+                obstacle = random.choice(obstacles_classes)()
+                obstacle.reset()
 
         # draw
         screen.fill(GREEN_COLOR)
         obstacle.draw(screen)
         player.draw(screen)
         score.draw(screen)
-        #obstacle.draw_hitbox(screen)
-        #player.draw_hitbox(screen)
+        obstacle.draw_hitbox(screen)
+        player.draw_hitbox(screen)
 
         if game_over :
             player.reset()
