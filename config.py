@@ -5,23 +5,20 @@ import os
 BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 IMG_PATHS = {
-    'small_box': os.path.join(ASSETS_DIR, 'objects', 'box(32x32).png'),
-    'big_box': os.path.join(ASSETS_DIR, 'objects', 'box(64x64).png'),
-    'yarn': os.path.join(ASSETS_DIR, 'objects', 'pink_yarn(32x32).png'), 
+    'small_box':{
+        'img': os.path.join(ASSETS_DIR, 'objects', 'box(32x32).png'),
+        'hitbox_factor': 2.5
+    },
+    'big_box':{
+        'img' : os.path.join(ASSETS_DIR, 'objects', 'box(64x64).png'),
+        'hitbox_factor' : 2.5
+    },
+    'yarn':{
+        'img': os.path.join(ASSETS_DIR, 'objects', 'pink_yarn(32x32).png'),
+        'hitbox_factor': 2
+    }, 
     'icon': os.path.join(ASSETS_DIR, 'icon', 'icone.png') 
 }
-
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 400
-GAME_TITLE = "TREX GAME"
-FPS = 60
-BLUE_COLOR = (0, 0, 255)
-RED_COLOR = (100, 0, 0)
-GREEN_COLOR = (143, 188, 143)
-BLACK_COLOR = (0, 0, 0)
-GROUND_MARGIN = SCREEN_HEIGHT // 4 # Marge entre le bas de la fenêtre et le sol
-GROUND_Y = SCREEN_HEIGHT - GROUND_MARGIN # Position verticale du sol
 
 SKINS = {
     "grey":{
@@ -40,3 +37,15 @@ SKINS = {
         "jump": os.path.join(ASSETS_DIR, "skins", "white_cat", "jump.png")
     }
 }
+
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 400
+GAME_TITLE = "TREX GAME"
+FPS = 60
+BLUE_COLOR = (0, 0, 255)
+RED_COLOR = (100, 0, 0)
+GREEN_COLOR = (143, 188, 143)
+BLACK_COLOR = (0, 0, 0)
+GROUND_MARGIN = SCREEN_HEIGHT // 4 # Marge entre le bas de la fenêtre et le sol
+GROUND_Y = SCREEN_HEIGHT - GROUND_MARGIN # Position verticale du sol
+
