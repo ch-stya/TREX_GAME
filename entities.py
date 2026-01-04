@@ -2,45 +2,128 @@
 
 import pygame
 from config import RED_COLOR, BLUE_COLOR, SCREEN_WIDTH, SCREEN_HEIGHT, GROUND_MARGIN, GROUND_Y, BLACK_COLOR, SKINS
-from utils import convert_spritesheet, scale_frames
 
 class GameManager:
     def __init__(self):
+        # Attributs pour la gestion du score
+        self.score = 0
+        self.highest_score = 0
+        self.last_score_update = 0
+
         self.speed = 5.0
         self.min_gap = 0
 
-    def update_difficulty(self):
-        # Augmenter la vitesse lentement
-        self.speed += 0.001 
-        # Ajuster l'écart min nécessaire selon la vitesse
-        # (Formule empirique à tester selon ta physique)
-        #self.min_gap = int(200 + (self.vitesse * 10))
+    def update(self):
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_score_update > 100:
+            self.score += 1
+            self.last_score_update = current_time
+
+            # Tous les 200 points on augmente la vitesse
+            if self.score % 200 == 0:
+                self.speed += 0.5
+                print(f"Speed up! {self.speed}")
+
+            # MAJ de l'écart minimum entre 2 obstacles
+            #self.min_gap = int(200 + (self.vitesse * 10))
+
+    def update_highest_score(self):
+        if self.score > self.highest_score :
+            self.highest_score = self.score
+            # sauvegarde dans un fichier à terme
+
+    def reset(self):
+        self.score = 0
+        self.speed = 5.0
+        self.last_score_update = pygame.time.get_ticks()
+
+
+class ScoreUI:
+    def __init__(self):
+        # score
+        self.score_font = pygame.font.Font(None, 30)  
+        self.highest_font = pygame.font.Font(None, 20) 
+
+        self.score_surface = None
+        self.highest_surface = None
+
+        self.last_known_score = -1
+        self.last_known_highest = -1
+
+    def draw(self, surface, game_manager):
+        # --- OPTIMISATION ---
+        if game_manager.score != self.last_known_score:
+            self.score_surface = self.score_font.render(f"Score : {game_manager.score}", True, BLACK_COLOR)
+            self.last_known_score = game_manager.score
+            
+        if game_manager.highest_score != self.last_known_highest:
+            self.highest_surface = self.highest_font.render(f"Best : {game_manager.highest_score}", True, BLACK_COLOR)
+            self.last_known_highest = game_manager.highest_score
+
+        # --- AFFICHAGE ---
+        if self.score_surface:
+            rect = self.score_surface.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//9))
+            surface.blit(self.score_surface, rect)
+            
+        if self.highest_surface:
+            rect_highest = self.highest_surface.get_rect(center=(SCREEN_WIDTH-SCREEN_WIDTH//8, SCREEN_HEIGHT-SCREEN_HEIGHT//11))
+            surface.blit(self.highest_surface, rect_highest)
+
+class UIManager:
+    def __init__(self):
+        # --- ECRAN GAME OVER ---
+        self.game_over_font = pygame.font.Font(None, 74)  # None = police par défaut, 74 = taille
+        self.game_over_surface = self.game_over_font.render("GAME OVER", True, RED_COLOR)
+        self.game_over_rect = self.game_over_surface.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+
+        self.replay_font = pygame.font.Font(None, 30)
+        self.replay_surface = self.replay_font.render("Press 'R' to restart", True, BLACK_COLOR)
+        self.replay_rect = self.replay_surface.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 40))
+
+        # --- ECRAN DEMARRAGE
+        self.start_font = pygame.font.Font(None, 50)
+        self.start_surface = self.start_font.render("Press 'Space' to start", True, BLACK_COLOR)
+        self.start_rect = self.start_surface.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
+    
+    def draw_game_over(self, surface):
+        """
+        Fonction permettant d'afficher l'écran de game over.
+
+        :param surface: objet pygame.display
+        """
+        surface.blit(self.game_over_surface, self.game_over_rect)
+        surface.blit(self.replay_surface, self.replay_rect)
+
+
+    def draw_start(self, surface):
+        """
+        Fonction permettant d'afficher l'écran de démarrage.
+
+        :param surface: objet pygame.display
+        """
+        surface.blit(self.start_surface, self.start_rect)
 
 class Player:
-    def __init__(self, skin):
-        self.skin = skin
+    def __init__(self, assets):
+        self.assets = assets
         scale_factor = 2
         self.hitbox_factor = 1.6 # facteur de réduction de la hitbox par rapport à la frame originale
         # Animation run player
-        self.run_frames, self.run_height, self.run_width = convert_spritesheet(SKINS[self.skin]["run"], 7)
-        self.run_frames = scale_frames(self.run_frames, scale_factor)
-        self.run_height = int(self.run_height * scale_factor)
-        self.run_width = int(self.run_width * scale_factor)
+        self.run_frames = assets['run']
+        self.run_width = self.run_frames[0].get_width()
+        self.run_height = self.run_frames[0].get_height()
         # Animation idle player
-        self.idle_frames, self.idle_height, self.idle_width = convert_spritesheet(SKINS[self.skin]["idle"], 7)
-        self.idle_frames = scale_frames(self.idle_frames, scale_factor)
-        self.idle_height = int(self.idle_height * scale_factor)
-        self.idle_width = int(self.idle_width * scale_factor)
+        self.idle_frames = assets['idle']
+        self.idle_width = self.idle_frames[0].get_width()
+        self.idle_height = self.idle_frames[0].get_height()
         # Animation jump up player
-        self.jump_up_frames, self.jump_up_height, self.jump_up_width = convert_spritesheet(SKINS[self.skin]["jump"], 7, 0, 3)
-        self.jump_up_frames = scale_frames(self.jump_up_frames, scale_factor)
-        self.jump_up_height = int(self.jump_up_height * scale_factor)
-        self.jump_up_width = int(self.jump_up_width * scale_factor)
+        self.jump_up_frames = assets['jump_up']
+        self.jump_up_width = self.jump_up_frames[0].get_width()
+        self.jump_up_height = self.jump_up_frames[0].get_height()
         # Animation jump down player
-        self.jump_down_frames, self.jump_down_height, self.jump_down_width = convert_spritesheet(SKINS[self.skin]["jump"], 7, 3, 6)
-        self.jump_down_frames = scale_frames(self.jump_down_frames, scale_factor)
-        self.jump_down_height = int(self.jump_down_height * scale_factor)
-        self.jump_down_width = int(self.jump_down_width * scale_factor)
+        self.jump_down_frames = assets['jump_down']
+        self.jump_down_width = self.jump_down_frames[0].get_width()
+        self.jump_down_height = self.jump_down_frames[0].get_height()
 
         # Création du rectangle à la bonne position
         self.rect = pygame.Rect(
@@ -57,7 +140,7 @@ class Player:
         self.frame_speed = 0.1 # Vitesse entre les frames de l'animation
         self.hitbox = self.rect.inflate(-self.idle_width//self.hitbox_factor, 0)
 
-        print(self.run_width, self.idle_width)
+        #print(self.run_width, self.idle_width)
         
     def draw(self, surface):
         #pygame.draw.rect(surface, RED_COLOR, self.rect)
@@ -142,6 +225,7 @@ class Obstacle(pygame.sprite.Sprite):
     def __init__(self, img=None, hitbox_factor=2, width=60, height=60):
         super().__init__()
         if img == None :
+            # Image fictive s'il n'y en a pas
             self.image = pygame.Surface((width, height))
             self.image.fill(BLUE_COLOR)
             self.width = width # largeur
@@ -182,7 +266,6 @@ class Obstacle(pygame.sprite.Sprite):
             self.on_screen = True
             
     def reset(self):
-        # Reset en cas de game over
         self.kill()
 
     def update_hitbox(self):
@@ -190,42 +273,3 @@ class Obstacle(pygame.sprite.Sprite):
 
     def draw_hitbox(self, surface):
         pygame.draw.rect(surface, (255, 0, 0), self.hitbox, 2)
-
-class Score:
-    def __init__(self, score=0):
-        self.score = score
-        self.best = 0
-        self.last_update_time = 0
-        # score
-        self.score_font = pygame.font.Font(None, 30)  
-        self.score_text = self.score_font.render("Score : " + str(self.score), True, BLACK_COLOR) 
-        self.score_text_rect = self.score_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//9))
-        # meilleur score
-        self.best_font = pygame.font.Font(None, 20) 
-        self.best_text = self.best_font.render("Best : " + str(self.best), True, BLACK_COLOR) 
-        self.best_text_rect = self.best_text.get_rect(center=(SCREEN_WIDTH-SCREEN_WIDTH//8, SCREEN_HEIGHT-SCREEN_HEIGHT//11))
-
-    def draw(self, surface):
-        # Affichage score actuel
-        self.score_text = self.score_font.render("Score : " + str(self.score), True, BLACK_COLOR) 
-        surface.blit(self.score_text, self.score_text_rect)
-        # Affichage meilleur score
-        self.best_text = self.best_font.render("Best : " + str(self.best), True, BLACK_COLOR) 
-        surface.blit(self.best_text, self.best_text_rect)
-
-    def update(self):
-        current_time = pygame.time.get_ticks()
-        if self.last_update_time+100 < current_time :
-            self.score += 1
-            self.last_update_time = current_time
-
-    def add(self, bonus):
-        self.score += bonus
-
-    def reset(self):
-        self.score = 0
-        self.last_update_time = pygame.time.get_ticks()
-
-    def update_best(self):
-        if self.score > self.best :
-            self.best = self.score
