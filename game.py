@@ -55,6 +55,8 @@ class Game():
         self.obstacles_group = pygame.sprite.Group()
         # Liste des obstacles possibles
         self.obstacle_types = ['yarn', 'big_box', 'small_box']  
+        # Spawn de l'obstacle
+        self.next_spawn_gap = 0
 
     def handle_input(self):
         """
@@ -118,8 +120,16 @@ class Game():
         if pygame.sprite.spritecollideany(self.player, self.obstacles_group, collided=Game.collision_par_hitbox):
             self.game_over = True
         # création aléatoire des obstacles
+        limit = self.game_manager.get_max_obstacles()
         if len(self.obstacles_group) == 0:
             self.spawn_obstacle()
+        elif len(self.obstacles_group) < limit :
+            last = self.obstacles_group.sprites()[-1]
+            gap = SCREEN_WIDTH - last.rect.right
+            if gap >= self.next_spawn_gap :
+                self.spawn_obstacle()
+
+    
 
     def draw(self):
         self.screen.fill(GREEN_COLOR)
@@ -167,3 +177,5 @@ class Game():
         obstacle = random.choice(self.obstacle_types)
         new_obstacle = Obstacle(img=self.assets[obstacle]['img'], hitbox_factor=self.assets[obstacle]['hitbox_factor'])
         self.obstacles_group.add(new_obstacle) 
+        # --- PROCHAIN OBSTACLE ---
+        self.next_spawn_gap = random.randint(self.game_manager.min_gap, self.game_manager.max_gap)

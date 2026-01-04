@@ -12,6 +12,7 @@ class GameManager:
 
         self.speed = 5.0
         self.min_gap = 0
+        self.max_gap = 500
 
     def update(self):
         current_time = pygame.time.get_ticks()
@@ -21,11 +22,41 @@ class GameManager:
 
             # Tous les 200 points on augmente la vitesse
             if self.score % 200 == 0:
-                self.speed += 0.5
+                self.speed += 0.3
                 print(f"Speed up! {self.speed}")
 
-            # MAJ de l'écart minimum entre 2 obstacles
-            #self.min_gap = int(200 + (self.vitesse * 10))
+            self.calcul_gaps()
+
+
+    def calcul_gaps(self):
+        # MAJ de l'écart minimum entre 2 obstacles
+        if self.score < 200 :
+            self.min_gap = int(250)
+            self.max_gap = 600
+        elif self.score >= 200 and self.score <= 300 :
+            self.min_gap = int(120 + self.speed*10)
+            self.max_gap = self.min_gap + 300
+        elif self.score > 300 and self.score <= 600 :
+            self.min_gap = int(120 + self.speed*10)
+            self.max_gap = self.min_gap + 250
+        elif self.score > 600 and self.score <= 1400 :
+            self.min_gap = int(120 + self.speed*15)
+            self.max_gap = self.min_gap + 150
+        else :
+            self.min_gap = int(120 + self.speed*20)
+            self.max_gap = self.min_gap + 150
+            
+
+    def get_max_obstacles(self):
+        if self.score < 100 :
+            # Level 1, un seul obstacle à la fois
+            return 1
+        elif self.score < 400 :
+            # Level 2, 2 obstacles maxi à la fois
+            return 2 
+        else :
+            # Pas de limite, l'écran se charge de la limitation
+            return 10
 
     def update_highest_score(self):
         if self.score > self.highest_score :
@@ -36,6 +67,7 @@ class GameManager:
         self.score = 0
         self.speed = 5.0
         self.last_score_update = pygame.time.get_ticks()
+        self.calcul_gaps()
 
 
 class ScoreUI:
@@ -106,7 +138,6 @@ class UIManager:
 class Player:
     def __init__(self, assets):
         self.assets = assets
-        scale_factor = 2
         self.hitbox_factor = 1.6 # facteur de réduction de la hitbox par rapport à la frame originale
         # Animation run player
         self.run_frames = assets['run']
