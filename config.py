@@ -1,5 +1,17 @@
 ### Fichier contenant les éléments de configuration de l'application ###
 
+import os
+
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
+IMG_PATHS = {
+    'small_box': os.path.join(ASSETS_DIR, 'objects', 'box(32x32).png'),
+    'big_box': os.path.join(ASSETS_DIR, 'objects', 'box(64x64).png'),
+    'yarn': os.path.join(ASSETS_DIR, 'objects', 'pink_yarn(32x32).png'), 
+    'icon': os.path.join(ASSETS_DIR, 'icon', 'icone.png') 
+}
+
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 400
 GAME_TITLE = "TREX GAME"
@@ -13,18 +25,18 @@ GROUND_Y = SCREEN_HEIGHT - GROUND_MARGIN # Position verticale du sol
 
 SKINS = {
     "grey":{
-        "run": "assets/skins/grey_cat/run.png",
-        "idle": "assets/skins/grey_cat/idle.png",
-        "jump": "assets/skins/grey_cat/jump.png"
+        "run": os.path.join(ASSETS_DIR, "skins", "grey_cat", "run.png"),
+        "idle": os.path.join(ASSETS_DIR, "skins", "grey_cat", "idle.png"),
+        "jump": os.path.join(ASSETS_DIR, "skins", "grey_cat", "jump.png")
     },
     "brown":{
-        "run": "assets/skins/brown_cat/run.png",
-        "idle": "assets/skins/brown_cat/idle.png",
-        "jump": "assets/skins/brown_cat/jump.png"
+        "run": os.path.join(ASSETS_DIR, "skins", "brown_cat", "run.png"),
+        "idle": os.path.join(ASSETS_DIR, "skins", "brown_cat", "idle.png"),
+        "jump": os.path.join(ASSETS_DIR, "skins", "brown_cat", "jump.png")
     },
     "white":{
-        "run": "assets/skins/white_cat/run.png",
-        "idle": "assets/skins/white_cat/idle.png",
-        "jump": "assets/skins/white_cat/jump.png"
+        "run": os.path.join(ASSETS_DIR, "skins", "white_cat", "run.png"),
+        "idle": os.path.join(ASSETS_DIR, "skins", "white_cat", "idle.png"),
+        "jump": os.path.join(ASSETS_DIR, "skins", "white_cat", "jump.png")
     }
 }

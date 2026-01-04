@@ -5,6 +5,12 @@ from PIL import Image
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, RED_COLOR, BLACK_COLOR
 
 def draw_game_over_screen(surface):
+    """
+    Docstring for draw_game_over_screen
+    Fonction permettant d'afficher l'écran de game over.
+
+    :param surface: objet pygame.display
+    """
     game_over_font = pygame.font.Font(None, 74)  # None = police par défaut, 74 = taille
     game_over_text = game_over_font.render("GAME OVER", True, RED_COLOR)  # texte rouge
     game_over_text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
@@ -16,6 +22,11 @@ def draw_game_over_screen(surface):
     return None
 
 def draw_start_screen(surface):
+    """
+    Fonction permettant d'afficher l'écran de démarrage.
+
+    :param surface: objet pygame.display
+    """
     start_font = pygame.font.Font(None, 50)
     start_text = start_font.render("Press 'Space' to start", True, BLACK_COLOR)
     start_text_rect = start_text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
@@ -23,6 +34,14 @@ def draw_start_screen(surface):
     return None
 
 def convert_spritesheet(path, total_images, start=0, end=None):
+    """
+    Fonction permettant de convertir un spritesheet en une liste de frames.
+    
+    :param path: (str) Chemin vers le fichier contenant le spritesheet 
+    :param total_images: (int) Nombre d'images contenues dans le sprisheet
+    :param start: (int) Par défaut 0, modulable si l'on ne veut pas récupérer toutes les images du spritesheet
+    :param end: (int) Par défaut None, modulable si l'on ne veut pas récupérer toutes les images du spritesheet
+    """
     spritesheet = pygame.image.load(path).convert_alpha()
     frame_width = spritesheet.get_width() // total_images
     frame_height = spritesheet.get_height()
@@ -37,11 +56,12 @@ def convert_spritesheet(path, total_images, start=0, end=None):
 
 def convert_img(chemin, res) :
     """
-    Fonction servant à convertir une image avec  Pillow.
-    Ecrire "from PIL import Image" en début de programme pour l'utiliser.
-    Entrées : Chemin de l'image (str), nouvelle résolution souhaitée (tuple)
-    -> Convertit l'image et la place dans le même dossier, avec  taille de l'image dans le nom.
-    -> Exemple d'utilisation : convert_img("assets/images/saotome_pretty.png", (240, 320))
+    Fonction servant à convertir une image avec  Pillow. Ecrire "from PIL import Image" en début de programme pour l'utiliser.
+    Convertit l'image et la place dans le même dossier, avec  taille de l'image dans le nom. 
+    Exemple d'utilisation : convert_img("assets/images/saotome_pretty.png", (240, 320))
+
+    :param chemin: (str) Chemin de l'image 
+    :param res: (tuple) Nouvelle résolution souhaitée 
     """
     # Conversion d'une image avec Pillow (à ne faire qu'une fois)
     image = Image.open(chemin)
@@ -53,7 +73,10 @@ def convert_img(chemin, res) :
 
 def scale_frames(frames, factor):
     """
-    Permet d'appliquer une mise à l'échelle à une sélection d'images.
+    Fonction permettant d'appliquer une mise à l'échelle à une sélection d'images.
+
+    :param frames: (liste) Liste des frames à mettre à l'échelle
+    :param factor: (float) Facteur de mise à l'échelle
     """
     scaled = []
     for frame in frames:
